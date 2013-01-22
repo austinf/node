@@ -567,6 +567,25 @@ int uv_udp_set_multicast_loop(uv_udp_t* handle, int on) {
   return uv__setsockopt_maybe_char(handle, IP_MULTICAST_LOOP, on);
 }
 
+int uv_udp_set_multicast_interface(uv_udp_t* handle, const char* interface_addr) {
+
+  struct in_addr addr;
+  memset(&addr, 0, sizeof addr);
+
+  if (interface_addr) {
+    addr.s_addr = inet_addr(interface_addr);
+  } else {
+    addr.s_addr = htonl(INADDR_ANY);
+  }
+
+  if (setsockopt(handle->fd, IPPROTO_IP, IP_MULTICAST_IF, (void*) &addr, sizeof addr) == -1) {
+    uv__set_sys_error(handle->loop, errno);
+    return -1;
+  }
+
+  return 0;
+}
+
 
 int uv_udp_getsockname(uv_udp_t* handle, struct sockaddr* name, int* namelen) {
   socklen_t socklen;

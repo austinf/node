@@ -107,6 +107,7 @@ void UDPWrap::Initialize(Handle<Object> target) {
   NODE_SET_PROTOTYPE_METHOD(t, "dropMembership", DropMembership);
   NODE_SET_PROTOTYPE_METHOD(t, "setMulticastTTL", SetMulticastTTL);
   NODE_SET_PROTOTYPE_METHOD(t, "setMulticastLoopback", SetMulticastLoopback);
+  NODE_SET_PROTOTYPE_METHOD(t, "setMulticastInterface", SetMulticastInterface);
   NODE_SET_PROTOTYPE_METHOD(t, "setBroadcast", SetBroadcast);
   NODE_SET_PROTOTYPE_METHOD(t, "setTTL", SetTTL);
 
@@ -217,6 +218,25 @@ Handle<Value> UDPWrap::AddMembership(const Arguments& args) {
 
 Handle<Value> UDPWrap::DropMembership(const Arguments& args) {
   return SetMembership(args, UV_LEAVE_GROUP);
+}
+
+Handle<Value> UDPWrap::SetMulticastInterface(const Arguments& args) {
+  HandleScope scope;
+  UNWRAP(UDPWrap)
+  assert(args.Length() == 1);
+  String::Utf8Value iface(args[0]);
+
+  const char* iface_cstr = *iface;
+  if (args[0]->IsUndefined() || args[0]->IsNull()) {
+      iface_cstr = NULL;
+  }
+
+  int r = uv_udp_set_multicast_interface(&wrap->handle_, iface_cstr);
+
+  if (r)
+    SetErrno(uv_last_error(uv_default_loop()));
+
+  return scope.Close(Integer::New(r));
 }
 
 

@@ -29,6 +29,7 @@ class UDPWrap: public HandleWrap {
   static Handle<Value> DropMembership(const Arguments& args);
   static Handle<Value> SetMulticastTTL(const Arguments& args);
   static Handle<Value> SetMulticastLoopback(const Arguments& args);
+  static Handle<Value> SetMulticastInterface(const Arguments& args);
   static Handle<Value> SetBroadcast(const Arguments& args);
   static Handle<Value> SetTTL(const Arguments& args);
   static UDPWrap* Unwrap(Local<Object> obj);
