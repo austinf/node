@@ -130,7 +130,7 @@
         'NODE_WANT_INTERNALS=1',
         'ARCH="<(target_arch)"',
         'PLATFORM="<(OS)"',
-        'NODE_TAG="<(node_tag)"',
+        'NODE_TAG="ceton"',
       ],
 
       'conditions': [
